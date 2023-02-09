@@ -1,0 +1,8 @@
+/*  公共样式 */
+/*  命名特异化具体化 */
+
+.app-view-block {
+    margin: var(--o-spacing-h4) var(--o-spacing-h2);
+    min-width: 1200px;
+    min-height: 1200px;
+}
