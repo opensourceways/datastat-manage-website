@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div>社区项目</div>
+  <div>SIG分析</div>
 </template>
 
 <style lang="scss" scoped></style>

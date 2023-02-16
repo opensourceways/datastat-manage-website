@@ -1,0 +1,125 @@
+<script setup lang="ts">
+import OLabel from '@/components/OLabel.vue';
+import { onMounted, ref } from 'vue';
+import TrendAnalysis from './items/TrendAnalysis.vue';
+import DeveloperTrend from './items/DeveloperTrend.vue';
+
+// 默认最近一个月时间
+const timeRange = ref<number[]>([]);
+
+const selectValue = ref('all');
+const communityOption = [
+  {
+    value: 'all',
+    label: 'All',
+  },
+  {
+    value: 'src-openeuler',
+    label: 'src-openeuler',
+  },
+  {
+    value: 'openeuler',
+    label: 'openeuler',
+  },
+];
+const getOrg = (): string[] => {
+  if (selectValue.value === 'all') {
+    return communityOption.map((item) => item.value).slice(1);
+  }
+  return [selectValue.value];
+};
+
+const selectInsider = ref('all');
+const insiderOption = [
+  {
+    value: 'all',
+    label: 'All',
+  },
+  {
+    value: '0',
+    label: '内部人员',
+  },
+  {
+    value: '1',
+    label: '外部人员',
+  },
+];
+const getInternal = () => {
+  if (selectInsider.value === 'all') {
+    return insiderOption.map((item) => item.value).slice(1);
+  }
+  return [selectInsider.value];
+};
+
+const commonParams = ref({
+  org: ['all'],
+  start: 0,
+  end: 0,
+  internal: ['all'],
+});
+onMounted(() => {
+  initSelect();
+});
+// 设置搜索值
+const initSelect = () => {
+  const obj = {
+    org: getOrg(),
+    start: new Date(timeRange.value[0]).getTime(),
+    end: new Date(timeRange.value[1]).getTime(),
+    internal: getInternal(),
+  };
+  commonParams.value = obj;
+};
+</script>
+
+<template>
+  <div class="content-header">
+    <OLabel name="组织名称">
+      <OSelect v-model="selectValue" @change="initSelect">
+        <OOption
+          v-for="item in communityOption"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </OSelect>
+    </OLabel>
+    <OLabel name="内部外部人员">
+      <OSelect v-model="selectInsider" @change="initSelect">
+        <OOption
+          v-for="item in insiderOption"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </OSelect>
+    </OLabel>
+    <OLabel name="时间">
+      <ODatePicker v-model="timeRange" @change="initSelect" />
+    </OLabel>
+  </div>
+  <div class="content-body">
+    <MoreCard title="开发者趋势分析">
+      <template #content>
+        <TrendAnalysis :common-params="commonParams"></TrendAnalysis>
+      </template>
+    </MoreCard>
+    <MoreCard title="开发者趋势">
+      <template #content>
+        <DeveloperTrend :common-params="commonParams"></DeveloperTrend>
+      </template>
+    </MoreCard>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.content-header {
+  display: flex;
+  gap: 24px;
+  margin-bottom: var(--o-spacing-h4);
+}
+.content-body {
+  display: grid;
+  row-gap: 24px;
+}
+</style>

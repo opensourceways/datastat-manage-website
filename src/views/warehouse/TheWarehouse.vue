@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div>社区贡献详情</div>
+  <div>仓库分析</div>
 </template>
 
 <style lang="scss" scoped></style>

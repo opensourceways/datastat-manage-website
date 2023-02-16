@@ -1,19 +1,29 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
-import TheActivity from '@/views/activity/TheActivity.vue';
-import TheContribution from '@/views/contribution/TheContribution.vue';
-import TheContributor from '@/views/contributor/TheContributor.vue';
+import TheOverview from '@/views/overview/TheOverview.vue';
+import TheUsers from '@/views/users/TheUsers.vue';
+import TheDeveloper from '@/views/developer/TheDeveloper.vue';
 import TheOrganization from '@/views/organization/TheOrganization.vue';
-import TheOthers from '@/views/others/TheOthers.vue';
-import TheProject from '@/views/project/TheProject.vue';
+import TheSigs from '@/views/sigs/TheSigs.vue';
+import TheWarehouse from '@/views/warehouse/TheWarehouse.vue';
 import { useCommonData } from '@/stores/common';
 
 export const routes: RouteRecordRaw[] = [
-  { path: '/', redirect: '/contributor' },
+  { path: '/', redirect: '/overview' },
   {
-    path: '/contributor',
-    name: 'contributor',
-    component: TheContributor,
+    path: '/overview',
+    name: 'overview',
+    component: TheOverview,
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: TheUsers,
+  },
+  {
+    path: '/developer',
+    name: 'developer',
+    component: TheDeveloper,
   },
   {
     path: '/organization',
@@ -21,24 +31,14 @@ export const routes: RouteRecordRaw[] = [
     component: TheOrganization,
   },
   {
-    path: '/project',
-    name: 'project',
-    component: TheProject,
+    path: '/sigs',
+    name: 'sigs',
+    component: TheSigs,
   },
   {
-    path: '/activity',
-    name: 'activity',
-    component: TheActivity,
-  },
-  {
-    path: '/contribution',
-    name: 'contribution',
-    component: TheContribution,
-  },
-  {
-    path: '/others',
-    name: 'others',
-    component: TheOthers,
+    path: '/warehouse',
+    name: 'warehouse',
+    component: TheWarehouse,
   },
 ];
 

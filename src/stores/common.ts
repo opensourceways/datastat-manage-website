@@ -12,18 +12,12 @@ export const useCommon = defineStore('common', () => {
   const theme = ref('light');
   const selectAsideItem = ref('/contributor');
   const community = ref('openeuler');
-  const commonParams = ref({
-    org: [''],
-    start: 0,
-    end: 0,
-  });
   return {
     lang,
     changeLang,
     theme,
     selectAsideItem,
     community,
-    commonParams,
   };
 });
 
