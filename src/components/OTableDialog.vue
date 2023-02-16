@@ -9,25 +9,14 @@ const props = defineProps({
     required: true,
     default: false,
   },
-  // 必传，用于记忆缓存列显示隐藏
   id: {
     type: String,
-    required: true,
     default: '',
   },
   data: {
     type: Array<any>,
     required: true,
-    default: [
-      {
-        name: '1',
-        value: 3,
-      },
-      {
-        name: '2',
-        value: 4,
-      },
-    ],
+    default: [],
   },
   tableConfig: {
     type: Array<ProTableColConfig>,
@@ -35,13 +24,6 @@ const props = defineProps({
       {
         key: 'name',
         label: '名称',
-        filtersConfig: {
-          search: true,
-        },
-      },
-      {
-        key: 'value',
-        label: 'Value',
         filtersConfig: {
           search: true,
         },

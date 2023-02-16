@@ -16,3 +16,9 @@ export function formatNumber(key: number) {
 
   return num;
 }
+
+// 获取时间格式YY-MM-DD
+export function formatDate(date: number | string) {
+  const time = new Date(date);
+  return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}`;
+}

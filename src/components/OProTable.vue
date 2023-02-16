@@ -3,7 +3,7 @@ import { determiningType } from '@/shared/utils/utils';
 import IconSetting from '~icons/app/icon-setting.svg';
 import IconSearch from '~icons/app/icon-search.svg';
 import IconFilter from '~icons/app/icon-filter.svg';
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { ProTableColConfig } from '@/shared/protable.interface';
 
 const props = defineProps({
@@ -56,11 +56,26 @@ const calcContainerHeight = computed(() => {
 
 const currentPage = ref(1);
 const pageSize = ref(props.pageSizes[0]);
-const currentData = computed(() => {
-  return props.data.slice(
-    (currentPage.value - 1) * pageSize.value,
-    currentPage.value * pageSize.value
-  );
+// 当前页表格数据
+const currentData = ref<any>([]);
+// 同步数据分页时全部数据
+const totalData = ref<any>([]);
+watch(
+  () => props.data,
+  () => {
+    if (props.isAsync) {
+      currentData.value = props.data;
+    } else {
+      filterTableData();
+    }
+  }
+);
+onMounted(() => {
+  if (props.isAsync) {
+    currentData.value = props.data;
+  } else {
+    filterTableData();
+  }
 });
 
 // 列显示隐藏
@@ -112,6 +127,7 @@ const getFilterConfig = () => {
     return [
       item.key,
       {
+        key: item.key,
         searchValue: '',
         selectValue: '',
         visible: false,
@@ -141,12 +157,47 @@ const isActive = (key: string) => {
     : '';
 };
 
+const emits = defineEmits(['filter']);
 // 过滤表格
 const filterTableData = () => {
   const arr = Object.entries(filterConfig).filter(
-    (item: any) => item[1].searchValue
+    (item: any) => item[1].searchValue || item[1].selectValue
   );
-  arr;
+  const filters = arr.map((item: any) => {
+    const { visible, ...obj } = item[1];
+    visible;
+    return obj;
+  });
+  const filterParam = {
+    filters,
+    currentPage: currentPage.value,
+    pageSize: pageSize.value,
+  };
+  // 异步的则返回过滤条件
+  if (props.isAsync) {
+    emits('filter', filterParam);
+  } else {
+    currentData.value = syncFilterData(filterParam);
+  }
+};
+
+const syncFilterData = (filterParam: any) => {
+  totalData.value = props.data.filter((item) => {
+    return filterParam.filters.every(
+      (it: any) =>
+        (!it.searchValue || String(item[it.key]).includes(it.searchValue)) &&
+        (!it.selectValue || it.selectValue === item[it.key])
+    );
+  });
+  return totalData.value.slice(
+    (currentPage.value - 1) * pageSize.value,
+    currentPage.value * pageSize.value
+  );
+};
+
+const sizeChange = () => {
+  currentPage.value = 1;
+  filterTableData();
 };
 </script>
 <template>
@@ -222,6 +273,7 @@ const filterTableData = () => {
           </OTableColumn>
         </template>
         <OTableColumn
+          v-if="columnList.length > 1"
           key="setting"
           width="50"
           fixed="right"
@@ -252,13 +304,15 @@ const filterTableData = () => {
       </transition-group>
     </OTable>
     <OPagination
-      v-if="(total || data.length) > pageSize"
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
       class="pagin"
       :page-sizes="pageSizes"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total || data.length"
+      :total="total || totalData.length"
+      :hide-on-single-page="true"
+      @size-change="sizeChange"
+      @current-change="filterTableData"
     ></OPagination>
   </div>
 </template>

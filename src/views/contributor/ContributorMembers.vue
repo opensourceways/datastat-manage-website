@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div>社区其他详情</div>
+  <div>单位会员人数</div>
 </template>
 
 <style lang="scss" scoped></style>

@@ -1,31 +1,20 @@
 <script setup lang="ts">
-/* 定制化支持跳转更多的card */
-
 defineProps({
-  name: {
+  title: {
     type: String,
     required: true,
     default: '',
   },
 });
-
-const emits = defineEmits(['clickMore']);
-const clickMore = () => {
-  emits('clickMore');
-};
 </script>
 <template>
   <OCard>
     <div class="card-header">
-      <slot name="header">
-        <div></div>
-      </slot>
       <h3>
         <slot name="title">
-          <span>开发者人数趋势分析</span>
+          <span>{{ title }}</span>
         </slot>
       </h3>
-      <a class="more" @click="clickMore">更多</a>
     </div>
     <slot name="content"></slot>
   </OCard>
@@ -33,17 +22,8 @@ const clickMore = () => {
 
 <style lang="scss" scoped>
 .card-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: center;
   margin-bottom: var(--o-spacing-h4);
   padding-bottom: var(--o-spacing-h4);
   border-bottom: 1px solid var(--o-color-division1);
-  h3 {
-    justify-self: center;
-  }
-  .more {
-    justify-self: right;
-  }
 }
 </style>

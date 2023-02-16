@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div>社区活动</div>
+  <div>SIG人数</div>
 </template>
 
 <style lang="scss" scoped></style>

@@ -20,6 +20,11 @@ const props = defineProps({
     default: '450px',
   },
 });
+
+// 环比保留两位小数
+const calcRatio = (num: number) => {
+  return `${Math.round(num * 10000) / 100}%`;
+};
 const getOption = (): EChartsOption => {
   return {
     title: [
@@ -28,21 +33,15 @@ const getOption = (): EChartsOption => {
         left: 'center',
       },
       {
-        text: `D0-D1:${(
-          (props.data[1]?.value / props.data[0]?.value) *
-          100
-        )?.toFixed(2)}%`,
-        top: '39%',
+        text: `D0-D1:${calcRatio(props.data[1]?.value / props.data[0]?.value)}`,
+        top: '42%',
         left: '73%',
         textStyle: {
           fontSize: 16,
         },
       },
       {
-        text: `D1-D2:${(
-          (props.data[2]?.value / props.data[1]?.value) *
-          100
-        )?.toFixed(2)}%`,
+        text: `D1-D2:${calcRatio(props.data[2]?.value / props.data[1]?.value)}`,
         top: '63%',
         left: '65%',
         textStyle: {
@@ -82,9 +81,11 @@ const getOption = (): EChartsOption => {
           show: true,
           position: 'inside',
           formatter: function (info) {
-            return `{total|${info.name}: ${info.value}}\n{week|周环比: ${
-              (info.data as any).value1
-            }}\n{month|月环比: ${(info.data as any).value1}}`;
+            return `{total|${info.name}: ${
+              info.value
+            }}\n{week|周环比: ${calcRatio(
+              (info.data as any).wowratio
+            )}}\n{month|月环比: ${calcRatio((info.data as any).momratio)}}`;
           },
           rich: {
             total: {
@@ -116,11 +117,7 @@ const getOption = (): EChartsOption => {
             fontSize: 20,
           },
         },
-        data: props.data.map((item) => ({
-          value: item.value,
-          value1: item.value,
-          name: item.name,
-        })),
+        data: props.data,
       },
     ],
   };
