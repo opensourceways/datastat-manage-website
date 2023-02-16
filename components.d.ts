@@ -11,7 +11,6 @@ declare module '@vue/runtime-core' {
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
     AppLanguage: typeof import('./src/components/AppLanguage.vue')['default']
     AppTheme: typeof import('./src/components/AppTheme.vue')['default']
-    copy: typeof import('./src/components/OLabel copy.vue')['default']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCollapse: typeof import('element-plus/es')['ElCollapse']
     ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
