@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import OEchartPieTable from '@/components/OEchartPieTable.vue';
+import OChartPieTable from '@/components/OChartPieTable.vue';
 import OProTable from '@/components/OProTable.vue';
 import OLabel from '@/components/OLabel.vue';
 import MoreCard from './MoreCard.vue';
@@ -221,17 +221,17 @@ const selectInsiderProp = computed(() => {
       ></OProTable>
     </OCard>
     <OCard class="card pie-table">
-      <OEchartPieTable
+      <OChartPieTable
         id="contributorPieTable"
         :data="companyContribute"
-      ></OEchartPieTable>
+      ></OChartPieTable>
     </OCard>
     <OCard class="card pie-table">
-      <OEchartPieTable
+      <OChartPieTable
         id="contributorPieTable1"
         :data="companyContribute"
         :only-value="true"
-      ></OEchartPieTable>
+      ></OChartPieTable>
     </OCard>
   </div>
 </template>

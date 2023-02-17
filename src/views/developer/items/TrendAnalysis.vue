@@ -124,7 +124,7 @@ const queryTotalCount = (operation: string) => {
 </script>
 <template>
   <div class="card-grid">
-    <OEchartFunnel :data="D0Data"></OEchartFunnel>
+    <OChartFunnel :data="D0Data"></OChartFunnel>
   </div>
 </template>
 <style lang="scss" scoped>

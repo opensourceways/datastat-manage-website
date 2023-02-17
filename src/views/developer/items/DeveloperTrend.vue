@@ -5,6 +5,9 @@ import { formatDate } from '@/shared/utils/helper';
 import { useCommonData } from '@/stores/common';
 import { onMounted, ref, watch } from 'vue';
 import { throttle } from 'lodash-es';
+import { Observable, zip } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FormRadioConfig } from '@/shared/formRadio.interface';
 
 const props = defineProps({
   commonParams: {
@@ -15,24 +18,24 @@ const props = defineProps({
 
 const echartData = ref<IObject>({
   xAxis: [],
-  yAxis: [],
+  series: [],
 });
 
 const { community } = useCommonData();
 
 onMounted(() => {
-  initData();
+  init();
 });
 
 watch(
   () => [community.value, props.commonParams],
-  () => initData(),
+  () => init(),
   { deep: true }
 );
 
-const initData = throttle(
+const init = throttle(
   function () {
-    queryDetail();
+    initData();
   },
   50,
   {
@@ -40,44 +43,116 @@ const initData = throttle(
   }
 );
 
+const initData = () => {
+  zip(queryDetail(), queryDevelop())
+    .pipe(
+      map((val) => {
+        const _echartData = {
+          xAxis: [],
+          series: [],
+        };
+        return val.reduce((pre: any, next: any) => {
+          const { xAxis, ...series } = next;
+          pre.xAxis = xAxis;
+          pre.series.push(series);
+          return pre;
+        }, _echartData);
+      })
+    )
+    .subscribe((data: any) => {
+      echartData.value = data;
+    });
+};
+
 const queryDetail = () => {
-  const param = {
-    metrics: [formRadioValue.value.metrics],
-    community: community.value,
-    variables: {
-      org: props.commonParams.org,
-      internal: props.commonParams.internal,
-      interval: formRadioValue.value.interval,
-    },
-    operation: formRadioValue.value.operation,
-    start: props.commonParams.start,
-    end: props.commonParams.end,
-  };
-  queryMetricsData(param).then((res) => {
-    const { data } = res;
-    const key = `${formRadioValue.value.metrics}_${formRadioValue.value.interval}`;
-    const stat = {
-      xAxis: [] as string[],
-      yAxis: [] as any[],
+  return new Observable((observe) => {
+    const param = {
+      metrics: [formRadioValue.value.metrics],
+      community: community.value,
+      variables: {
+        org: props.commonParams.org,
+        internal: props.commonParams.internal,
+        interval: formRadioValue.value.interval,
+      },
+      operation: formRadioValue.value.operation,
+      start: props.commonParams.start,
+      end: props.commonParams.end,
     };
-    if (data[key]) {
-      data[key].forEach((item: any) => {
-        stat.xAxis.push(formatDate(item.date));
-        stat.yAxis.push({
-          value: item[formRadioValue.value.operation],
-          date: item.date,
-        });
+    const stat = {
+      name: '开发者',
+      xAxis: [] as string[],
+      data: [] as any[],
+    };
+    queryMetricsData(param)
+      .then((res) => {
+        const { data } = res;
+        const key = `${formRadioValue.value.metrics}_${formRadioValue.value.interval}`;
+        if (data[key]) {
+          data[key].forEach((item: any) => {
+            stat.xAxis.push(formatDate(item.date));
+            stat.data.push({
+              value: item[formRadioValue.value.operation],
+              date: item.date,
+            });
+          });
+        }
+        observe.next(stat);
+        observe.complete();
+      })
+      .catch(() => {
+        observe.next(stat);
+        observe.complete();
       });
-    }
-    echartData.value = stat;
+  });
+};
+const queryDevelop = () => {
+  return new Observable((observe) => {
+    const param = {
+      metrics: [formRadioValue.value.metrics],
+      community: community.value,
+      variables: {
+        org: props.commonParams.org,
+        internal: props.commonParams.internal,
+        interval: formRadioValue.value.interval,
+      },
+      operation: formRadioValue.value.operation,
+      start: props.commonParams.start,
+      end: props.commonParams.end,
+    };
+    const stat = {
+      name: 'PR',
+      xAxis: [] as string[],
+      data: [] as any[],
+      type: 'line',
+    };
+    queryMetricsData(param)
+      .then((res) => {
+        const { data } = res;
+        const key = `${formRadioValue.value.metrics}_${formRadioValue.value.interval}`;
+        if (data[key]) {
+          data[key].forEach((item: any) => {
+            stat.xAxis.push(formatDate(item.date));
+            stat.data.push({
+              value: item[formRadioValue.value.operation],
+              date: item.date,
+            });
+          });
+        }
+        observe.next(stat);
+        observe.complete();
+      })
+      .catch(() => {
+        observe.next(stat);
+        observe.complete();
+      });
   });
 };
 
-const formRadioOption = [
+const formRadioOption: FormRadioConfig[] = [
   {
     label: '度量指标',
     id: 'metrics',
-    list: [
+    options: [
       { label: 'D0', value: 'D0' },
       { label: 'D1', value: 'D1' },
       { label: 'D2', value: 'D2' },
@@ -86,7 +161,7 @@ const formRadioOption = [
   {
     label: '度量维度',
     id: 'operation',
-    list: [
+    options: [
       { label: '增量', value: 'increase' },
       { label: '总量', value: 'total' },
       { label: '当期活跃', value: 'active' },
@@ -95,7 +170,7 @@ const formRadioOption = [
   {
     label: '间隔周期',
     id: 'interval',
-    list: [
+    options: [
       { label: '天', value: '1d' },
       { label: '周', value: '1w' },
       { label: '月', value: '1M' },
@@ -146,15 +221,13 @@ const clickSeries = (res: any) => {
       :option="formRadioOption"
       @change="initData"
     ></OFormRadio>
-    <OEchartBar
+    <OChartBar
       title="开发者"
       :data="echartData"
       @click-series="clickSeries"
-    ></OEchartBar>
+    ></OChartBar>
   </div>
 </template>
 <style lang="scss" scoped>
-.right-radio {
-  margin-left: 64px;
-}
+
 </style>

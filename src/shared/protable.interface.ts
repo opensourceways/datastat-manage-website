@@ -1,3 +1,4 @@
+import { Option } from './interface';
 export interface ProTableColConfig {
   // 列唯一标识字符
   key: string;
@@ -14,12 +15,3 @@ interface ProTableFilterConfig {
 }
 
 export type SelectOptionConfig = Option;
-
-export interface OptionItem {
-  value: string;
-  label: string;
-}
-
-export interface Option {
-  options: OptionItem[];
-}

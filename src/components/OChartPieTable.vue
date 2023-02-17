@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import OEchartPie from './OEchartPie.vue';
-import OEchartPieOfTable from './OEchartPieOfTable.vue';
+import OChartPie from './OChartPie.vue';
+import OChartPieOfTable from './OChartPieOfTable.vue';
 import { ref } from 'vue';
 const props = defineProps({
   id: {
@@ -32,19 +32,19 @@ const dispatchAction = (data: any) => {
 </script>
 <template>
   <div class="pieTable">
-    <OEchartPie
+    <OChartPie
       :id="id"
       ref="pieEchart"
       :data="data"
       :width="width"
       :height="height"
-    ></OEchartPie>
-    <OEchartPieOfTable
+    ></OChartPie>
+    <OChartPieOfTable
       class="table"
       :data="data"
       :only-value="onlyValue"
       @dispatch-action="dispatchAction"
-    ></OEchartPieOfTable>
+    ></OChartPieOfTable>
   </div>
 </template>
 <style lang="scss" scoped>

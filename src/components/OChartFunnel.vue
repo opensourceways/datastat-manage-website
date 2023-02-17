@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import OEchart from './OEchart.vue';
+import OChart from './OChart.vue';
 type EChartsOption = echarts.EChartsOption;
 const props = defineProps({
   id: {
@@ -80,6 +80,7 @@ const getOption = (): EChartsOption => {
         label: {
           show: true,
           position: 'inside',
+          padding: [0, 0, 50, 0],
           formatter: function (info) {
             return `{total|${info.name}: ${
               info.value
@@ -89,15 +90,15 @@ const getOption = (): EChartsOption => {
           },
           rich: {
             total: {
-              fontSize: 14,
-              lineHeight: 40,
+              fontSize: 10,
+              lineHeight: 20,
             },
             week: {
-              fontSize: 16,
-              lineHeight: 40,
+              fontSize: 12,
+              lineHeight: 20,
             },
             month: {
-              fontSize: 16,
+              fontSize: 12,
             },
           },
         },
@@ -134,11 +135,11 @@ const clickSeries = (res: any) => {
 };
 </script>
 <template>
-  <o-echart
+  <OChart
     :id="id"
     :option="(option as EChartsOption)"
     :width="width"
     :height="height"
     @click-series="clickSeries"
-  ></o-echart>
+  ></OChart>
 </template>

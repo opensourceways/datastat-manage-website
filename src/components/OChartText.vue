@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import OEchart from './OEchart.vue';
+import OChart from './OChart.vue';
 type EChartsOption = echarts.EChartsOption;
 const props = defineProps({
   id: {
@@ -99,10 +99,10 @@ watch(
 );
 </script>
 <template>
-  <o-echart
+  <OChart
     :id="id"
     :option="(option as EChartsOption)"
     :width="width"
     :height="height"
-  ></o-echart>
+  ></OChart>
 </template>

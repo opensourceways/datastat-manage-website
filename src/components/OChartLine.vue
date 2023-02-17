@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import OEchart from './OEchart.vue';
+import OChart from './OChart.vue';
 type EChartsOption = echarts.EChartsOption;
 const props = defineProps({
   id: {
@@ -8,15 +8,12 @@ const props = defineProps({
     default: '',
   },
   data: {
-    type: Object,
-    default: () => ({
-      xAxis: [],
-      yAxis: [],
-    }),
+    type: Array<any>,
+    default: [],
   },
   width: {
     type: String,
-    default: '100%',
+    default: '950px',
   },
   height: {
     type: String,
@@ -24,7 +21,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '',
+    default: '开发者（D0当期活跃）',
   },
 });
 const getOption = (): EChartsOption => {
@@ -47,15 +44,16 @@ const getOption = (): EChartsOption => {
     calculable: true,
     xAxis: {
       type: 'category',
-      data: props.data.xAxis,
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     },
     yAxis: {
       type: 'value',
     },
     series: [
       {
-        data: props.data.yAxis,
-        type: 'bar',
+        name: '开发者',
+        data: [120, 200, 150, 80, 70, 110, 130],
+        type: 'line',
       },
     ],
   };
@@ -67,17 +65,16 @@ watch(
   () => (option.value = getOption()),
   { deep: true }
 );
-const emits = defineEmits(['clickSeries']);
 const clickSeries = (res: any) => {
-  emits('clickSeries', res);
+  console.log(res);
 };
 </script>
 <template>
-  <o-echart
+  <OChart
     :id="id"
     :option="(option as EChartsOption)"
     :width="width"
     :height="height"
     @click-series="clickSeries"
-  ></o-echart>
+  ></OChart>
 </template>
