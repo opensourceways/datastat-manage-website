@@ -79,11 +79,11 @@ const clickSeries = (res: any) => {
 };
 </script>
 <template>
-  <o-echart
+  <OChart
     :id="id"
     :option="(option as EChartsOption)"
     :width="width"
     :height="height"
     @click-series="clickSeries"
-  ></o-echart>
+  ></OChart>
 </template>
