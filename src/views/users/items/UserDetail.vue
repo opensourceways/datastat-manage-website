@@ -152,7 +152,7 @@ const formRadioValue = ref({
       :option="formRadioOption"
       @change="initData"
     ></OFormRadio>
-    <OEchartBar :title="getTitle" :data="echartData"></OEchartBar>
+    <OChartBar :title="getTitle" :data="echartData"></OChartBar>
   </div>
 </template>
 <style lang="scss" scoped></style>

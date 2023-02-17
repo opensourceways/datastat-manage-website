@@ -221,11 +221,11 @@ const clickSeries = (res: any) => {
       :option="formRadioOption"
       @change="initData"
     ></OFormRadio>
-    <OEchartBar
+    <OChartBar
       title="开发者"
       :data="echartData"
       @click-series="clickSeries"
-    ></OEchartBar>
+    ></OChartBar>
   </div>
 </template>
 <style lang="scss" scoped>

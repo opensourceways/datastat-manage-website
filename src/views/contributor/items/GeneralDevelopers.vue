@@ -233,7 +233,7 @@ const clickSeries = (res: any) => {
 </script>
 <template>
   <div class="card-grid">
-    <OEchartFunnel :data="D0Data"></OEchartFunnel>
+    <OChartFunnel :data="D0Data"></OChartFunnel>
     <div>
       <OFormRadio
         v-model="formRadioValue"
@@ -241,11 +241,11 @@ const clickSeries = (res: any) => {
         :option="formRadioOption"
         @change="initData"
       ></OFormRadio>
-      <OEchartBar
+      <OChartBar
         title="开发者"
         :data="echartData"
         @click-series="clickSeries"
-      ></OEchartBar>
+      ></OChartBar>
     </div>
   </div>
   <OTableDialog v-model="seriesDialogVisible" :data="tableData"></OTableDialog>

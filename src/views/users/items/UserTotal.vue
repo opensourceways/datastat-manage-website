@@ -83,7 +83,7 @@ const titalData = ref([
 <template>
   <div class="box">
     <div v-for="item in titalData" :key="item.key">
-      <OEchartText :data="item"></OEchartText>
+      <OChartText :data="item"></OChartText>
     </div>
   </div>
 </template>

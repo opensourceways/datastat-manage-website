@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import OEchart from './OEchart.vue';
+import OChart from './OChart.vue';
 type EChartsOption = echarts.EChartsOption;
 const props = defineProps({
   id: {

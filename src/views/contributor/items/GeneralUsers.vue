@@ -22,12 +22,12 @@ const getParams = (val: any) => {
   <div class="card-grid">
     <div>
       <div v-for="item in D0Data" :key="item.key">
-        <OEchartText :data="item"></OEchartText>
+        <OChartText :data="item"></OChartText>
       </div>
     </div>
     <div>
       <OFormRadio class="right-radio" @change="getParams"></OFormRadio>
-      <OEchartBar></OEchartBar>
+      <OChartBar></OChartBar>
     </div>
   </div>
 </template>
