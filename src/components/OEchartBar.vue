@@ -11,7 +11,7 @@ const props = defineProps({
     type: Object,
     default: () => ({
       xAxis: [],
-      yAxis: [],
+      series: [],
     }),
   },
   width: {
@@ -36,6 +36,14 @@ const getOption = (): EChartsOption => {
     tooltip: {
       trigger: 'axis',
     },
+    grid: {
+      left: 80,
+      right: 20,
+    },
+    legend: {
+      data: props.data.series.map((item: any) => item.name),
+      bottom: 10,
+    },
     toolbox: {
       feature: {
         dataView: { show: true, readOnly: true },
@@ -52,12 +60,10 @@ const getOption = (): EChartsOption => {
     yAxis: {
       type: 'value',
     },
-    series: [
-      {
-        data: props.data.yAxis,
-        type: 'bar',
-      },
-    ],
+    series: props.data.series.map((item: any) => ({
+      ...item,
+      type: item.type || 'bar',
+    })),
   };
 };
 const option = ref({} as EChartsOption);

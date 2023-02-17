@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IObject } from '@/shared/interface';
+import { FormRadioConfig } from '@/shared/formRadio.interface';
 import { toRefs, ref } from 'vue';
 const props = defineProps({
   modelValue: {
@@ -7,7 +7,7 @@ const props = defineProps({
     default: () => ({}),
   },
   option: {
-    type: Array<IObject>,
+    type: Array<FormRadioConfig>,
     default: [],
   },
   // 展示分割线
@@ -34,24 +34,40 @@ const form = ref(
 </script>
 
 <template>
-  <div>
-    <div v-for="(item, index) in option" :key="item.id">
+  <div class="group-radio">
+    <template v-for="(item, index) in option" :key="item.id">
       <div v-if="division && index" class="line"></div>
-      <div class="group-radio">
-        <p class="label">{{ item.label }}</p>
-        <el-radio-group v-model="form[item.id]" @change="changeRadio">
-          <el-radio
-            v-for="list in item.list"
-            :key="list.id"
-            border
-            :label="list.value"
-          >
-            {{ list.label }}
-          </el-radio>
-        </el-radio-group>
-      </div>
-    </div>
-    <div>
+      <p class="label">{{ item.label }}</p>
+      <OSelect
+        v-if="item.type === 'select'"
+        v-model="form[item.id]"
+        class="select"
+        @change="changeRadio"
+      >
+        <OOption
+          v-for="list in item.options"
+          :key="list.value"
+          :label="list.label"
+          :value="list.value"
+        />
+      </OSelect>
+      <el-radio-group
+        v-else
+        v-model="form[item.id]"
+        class="select"
+        @change="changeRadio"
+      >
+        <el-radio
+          v-for="list in item.options"
+          :key="list.value"
+          border
+          :label="list.value"
+        >
+          {{ list.label }}
+        </el-radio>
+      </el-radio-group>
+    </template>
+    <div class="input">
       <slot name="searchInput"></slot>
     </div>
   </div>
@@ -60,14 +76,25 @@ const form = ref(
 <style lang="scss" scoped>
 .line {
   border-bottom: 1px solid var(--o-color-division1);
-  margin-bottom: 18px;
+  grid-column-start: span 3;
 }
 .group-radio {
-  display: flex;
+  display: grid;
+  grid-template-columns: max-content max-content auto;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  gap: 16px 24px;
   .label {
-    margin-right: 24px;
+    grid-column-start: 1;
+    grid-column-end: 2;
+  }
+  .select {
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+  .input {
+    grid-column-start: 2;
+    grid-column-end: 4;
   }
   :deep(.el-radio) {
     border-radius: 0;

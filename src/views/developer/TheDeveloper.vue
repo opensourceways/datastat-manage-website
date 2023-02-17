@@ -3,12 +3,13 @@ import OLabel from '@/components/OLabel.vue';
 import { onMounted, ref } from 'vue';
 import TrendAnalysis from './items/TrendAnalysis.vue';
 import DeveloperTrend from './items/DeveloperTrend.vue';
+import { OptionItem } from '@/shared/interface';
 
 // 默认最近一个月时间
 const timeRange = ref<number[]>([]);
 
 const selectValue = ref('all');
-const communityOption = [
+const communityOption: OptionItem[] = [
   {
     value: 'all',
     label: 'All',
@@ -30,7 +31,7 @@ const getOrg = (): string[] => {
 };
 
 const selectInsider = ref('all');
-const insiderOption = [
+const insiderOption: OptionItem[] = [
   {
     value: 'all',
     label: 'All',

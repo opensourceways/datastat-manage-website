@@ -80,6 +80,7 @@ const getOption = (): EChartsOption => {
         label: {
           show: true,
           position: 'inside',
+          padding: [0, 0, 50, 0],
           formatter: function (info) {
             return `{total|${info.name}: ${
               info.value
@@ -89,15 +90,15 @@ const getOption = (): EChartsOption => {
           },
           rich: {
             total: {
-              fontSize: 14,
-              lineHeight: 40,
+              fontSize: 10,
+              lineHeight: 20,
             },
             week: {
-              fontSize: 16,
-              lineHeight: 40,
+              fontSize: 12,
+              lineHeight: 20,
             },
             month: {
-              fontSize: 16,
+              fontSize: 12,
             },
           },
         },
