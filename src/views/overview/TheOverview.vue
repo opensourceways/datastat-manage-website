@@ -87,41 +87,39 @@ onMounted(() => {
   <o-banner class="home-banner">
     <div class="banner-content">
       <div class="community-content">
-        <div class="community-info">
-          <p class="title" @click="goTo('users')">社区用户 User</p>
+        <div class="community-info" @click="goTo('users')">
+          <p class="title">社区用户 User</p>
           <p class="num">{{ data.users }}</p>
         </div>
-        <div class="community-info">
-          <p class="title" @click="goTo('developer')">贡献者 Contributor</p>
+        <div class="community-info" @click="goTo('developer')">
+          <p class="title">贡献者 Contributor</p>
           <p class="num">
             {{ data.contributors }}
           </p>
         </div>
-        <div class="community-info">
-          <p class="title" @click="goTo('organization')">
-            单位会员 Organization Member
-          </p>
+        <div class="community-info" @click="goTo('organization')">
+          <p class="title">单位会员 Organization Member</p>
           <p class="num">{{ data.partners }}</p>
         </div>
         <div class="community-panel">
-          <div class="community-info">
-            <p class="title" @click="goTo('warehouse')">合并请求 PR</p>
+          <div class="community-info" @click="goTo('warehouse')">
+            <p class="title">合并请求 PR</p>
             <p class="num">{{ data.prs }}</p>
           </div>
-          <div class="community-info">
-            <p class="title" @click="goTo('warehouse')">需求&问题 Issue</p>
+          <div class="community-info" @click="goTo('warehouse')">
+            <p class="title">需求&问题 Issue</p>
             <p class="num">{{ data.issues }}</p>
           </div>
-          <div class="community-info">
-            <p class="title" @click="goTo('warehouse')">评审 Comment</p>
+          <div class="community-info" @click="goTo('warehouse')">
+            <p class="title">评审 Comment</p>
             <p class="num">{{ data.comments }}</p>
           </div>
-          <div class="community-info">
-            <p class="title" @click="goTo('sigs')">特别兴趣小组 SIG</p>
+          <div class="community-info" @click="goTo('sigs')">
+            <p class="title">特别兴趣小组 SIG</p>
             <p class="num">{{ data.sigs }}</p>
           </div>
-          <div class="community-info">
-            <p class="title" @click="goTo('warehouse')">代码仓库 Repository</p>
+          <div class="community-info" @click="goTo('warehouse')">
+            <p class="title">代码仓库 Repository</p>
             <p class="num">{{ data.repos }}</p>
           </div>
         </div>
@@ -172,6 +170,7 @@ onMounted(() => {
       color: #fff;
       line-height: 84px;
       font-weight: 400;
+      cursor: pointer;
     }
     .community-info {
       text-align: left;

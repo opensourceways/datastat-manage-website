@@ -5,7 +5,7 @@ import { onMounted, ref, watch } from 'vue';
 import { from, Observable } from 'rxjs';
 import { mergeMap, reduce } from 'rxjs/operators';
 import { throttle } from 'lodash-es';
-
+import OInstruction from '@/components/OInstruction.vue';
 const props = defineProps({
   commonParams: {
     type: Object,
@@ -125,6 +125,7 @@ const queryTotalCount = (operation: string) => {
 <template>
   <div class="card-grid">
     <OChartFunnel :data="D0Data"></OChartFunnel>
+    <OInstruction/>
   </div>
 </template>
 <style lang="scss" scoped>
