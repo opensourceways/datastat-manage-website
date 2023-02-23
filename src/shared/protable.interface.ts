@@ -6,6 +6,8 @@ export interface ProTableColConfig {
   label: string;
   // 过滤方式
   filtersConfig?: ProTableFilterConfig;
+  // 多级表头
+  children?: ProTableColConfig[];
 }
 
 // 过滤方式

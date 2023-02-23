@@ -56,3 +56,22 @@ export const getNowFormatDate = () => {
   const currentdate = yearStr + seperator1 + monthStr + seperator1 + dayStr;
   return currentdate;
 };
+
+/**
+ * @param num 被除数
+ * @param total 总数
+ * @param decimal 保留几位小数
+ */
+export function calcRatio(
+  num: number | string,
+  total: number | string,
+  decimal = 2
+) {
+  const _num = Number(num) || 0;
+  const _total = Number(total) || 1;
+  return (
+    Math.round((_num / _total) * Math.pow(10, decimal + 2)) /
+      Math.pow(10, decimal) +
+    '%'
+  );
+}

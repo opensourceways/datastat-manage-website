@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ECHARTOPTION } from '@/shared/common.const';
 import { onMounted, watch, ref } from 'vue';
 const props = defineProps({
   data: {
@@ -7,7 +8,7 @@ const props = defineProps({
   },
   width: {
     type: String,
-    default: '350px',
+    default: '300px',
   },
   height: {
     type: String,
@@ -35,9 +36,10 @@ const initTableData = () => {
       item.value = findone?.value || 0;
     });
   } else {
-    tableData.value = arr.map((item) => ({
+    tableData.value = arr.map((item, index) => ({
       ...item,
       selected: true,
+      color: ECHARTOPTION.color[index],
     }));
   }
   sortTableDataValue();

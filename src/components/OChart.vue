@@ -2,7 +2,7 @@
 import { ECHARTOPTION } from '@/shared/common.const';
 import * as echarts from 'echarts';
 import { nanoid } from 'nanoid';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, shallowRef, watch } from 'vue';
 type EChartsOption = echarts.EChartsOption;
 type EChartsType = echarts.EChartsType;
 const props = defineProps({
@@ -34,21 +34,22 @@ onMounted(() => {
   initEchart();
 });
 const emits = defineEmits(['clickSeries']);
-let myChart: EChartsType;
+const myChart = shallowRef<EChartsType | null>(null);
 const initEchart = () => {
-  if (!myChart) {
+  if (!myChart.value) {
     const chartDom = document.getElementById(props.id || defaultId.value);
     if (chartDom) {
-      myChart = echarts.init(chartDom);
+      myChart.value = echarts.init(chartDom);
     }
   }
   const option = {
     ...ECHARTOPTION,
     ...props.option,
   };
-  myChart.setOption(option);
-  myChart.off('click');
-  myChart.on('click', 'series', function (param: any) {
+  myChart.value?.clear();
+  myChart.value?.setOption(option);
+  myChart.value?.off('click');
+  myChart.value?.on('click', 'series', function (param: any) {
     emits('clickSeries', param);
   });
 };

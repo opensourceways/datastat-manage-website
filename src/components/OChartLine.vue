@@ -8,12 +8,15 @@ const props = defineProps({
     default: '',
   },
   data: {
-    type: Array<any>,
-    default: [],
+    type: Object,
+    default: () => ({
+      xAxis: [],
+      series: [],
+    }),
   },
   width: {
     type: String,
-    default: '950px',
+    default: '100%',
   },
   height: {
     type: String,
@@ -21,7 +24,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '开发者（D0当期活跃）',
+    default: '',
   },
 });
 const getOption = (): EChartsOption => {
@@ -32,6 +35,14 @@ const getOption = (): EChartsOption => {
     },
     tooltip: {
       trigger: 'axis',
+    },
+    grid: {
+      left: 80,
+      right: 20,
+    },
+    legend: {
+      data: props.data.series.map((item: any) => item.name),
+      bottom: 10,
     },
     toolbox: {
       feature: {
@@ -44,18 +55,15 @@ const getOption = (): EChartsOption => {
     calculable: true,
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: props.data.xAxis,
     },
     yAxis: {
       type: 'value',
     },
-    series: [
-      {
-        name: '开发者',
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: 'line',
-      },
-    ],
+    series: props.data.series.map((item: any) => ({
+      ...item,
+      type: item.type || 'line',
+    })),
   };
 };
 const option = ref({} as EChartsOption);
