@@ -243,7 +243,7 @@ const queryIncrease = (term: string) => {
       <OChartLine :data="echartData" :title="getTitle"></OChartLine>
     </div>
     <ItemDetailTable
-      id="organizationProtable"
+      id="warehouseProtable"
       :common-params="commonParams"
     ></ItemDetailTable>
   </div>
