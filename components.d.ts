@@ -39,6 +39,7 @@ declare module '@vue/runtime-core' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElTree: typeof import('element-plus/es')['ElTree']
     MoreCard: typeof import('./src/components/MoreCard.vue')['default']
+    OBanner: typeof import('./src/components/OBanner.vue')['default']
     OBar: typeof import('./src/components/OBar.vue')['default']
     OChart: typeof import('./src/components/OChart.vue')['default']
     OChartBar: typeof import('./src/components/OChartBar.vue')['default']
@@ -55,6 +56,7 @@ declare module '@vue/runtime-core' {
     OProTable: typeof import('./src/components/OProTable.vue')['default']
     OTableDiag: typeof import('./src/components/OTableDiag.vue')['default']
     OTableDialog: typeof import('./src/components/OTableDialog.vue')['default']
+    OTextTitle: typeof import('./src/components/OTextTitle.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

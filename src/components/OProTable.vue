@@ -80,7 +80,14 @@ onMounted(() => {
 
 // 列显示隐藏
 const columnList = computed(() => {
-  return props.tableConfig.map((item) => item.key);
+  return props.tableConfig
+    .map((item) => {
+      if (item.children) {
+        return item.children.map((it) => it.key);
+      }
+      return item.key;
+    })
+    .flat();
 });
 const getCheckedColumnList = () => {
   const str = localStorage.getItem('tableCol') || '{}';
@@ -202,75 +209,94 @@ const sizeChange = () => {
 </script>
 <template>
   <div :style="{ 'max-height': calcContainerHeight, width }">
-    <OTable
+    <ElTable
       :id="id"
       :max-height="height"
       :style="{ width: '100%' }"
       :data="currentData"
+      row-key="name"
     >
       <transition-group name="table">
         <template v-for="item in tableConfig" :key="item.key">
-          <OTableColumn
-            v-if="checkedColumnList.includes(item.key)"
-            :prop="item.key"
-            :label="item.label"
+          <template
+            v-if="
+              !item?.children?.length && checkedColumnList.includes(item.key)
+            "
           >
-            <template #header>
-              <div class="header-filter">
-                <span :class="isActive(item.key)">
-                  {{ item.label }}
-                </span>
-                <el-popover
-                  v-if="item?.filtersConfig?.search"
-                  v-model:visible="filterConfig[item.key].visible"
-                  width="286"
-                  trigger="click"
-                >
-                  <template #reference>
-                    <OIcon class="header-icon" :class="isActive(item.key)">
-                      <IconSearch></IconSearch>
-                    </OIcon>
-                  </template>
-                  <div>
-                    <OSearch
-                      v-model="filterConfig[item.key].searchValue"
-                      @change="search(item.key)"
-                    ></OSearch>
-                  </div>
-                </el-popover>
-                <ODropdown
-                  v-if="item?.filtersConfig?.select"
-                  :max-height="250"
-                  trigger="click"
-                  @command="select($event, item.key)"
-                  @visible-change="(val:boolean) => filterConfig[item.key].visible = val"
-                >
-                  <OIcon class="header-icon" :class="isActive(item.key)">
-                    <IconFilter></IconFilter>
-                  </OIcon>
-                  <template #dropdown>
-                    <div class="search-box">
-                      <ODropdownItem v-if="true" :command="''">
-                        取消选项
-                      </ODropdownItem>
+            <ElTableColumn :prop="item.key" :label="item.label">
+              <template #header>
+                <div class="header-filter">
+                  <span :class="isActive(item.key)">
+                    {{ item.label }}
+                  </span>
+                  <el-popover
+                    v-if="item?.filtersConfig?.search"
+                    v-model:visible="filterConfig[item.key].visible"
+                    width="286"
+                    trigger="click"
+                  >
+                    <template #reference>
+                      <OIcon class="header-icon" :class="isActive(item.key)">
+                        <IconSearch></IconSearch>
+                      </OIcon>
+                    </template>
+                    <div>
+                      <OSearch
+                        v-model="filterConfig[item.key].searchValue"
+                        @change="search(item.key)"
+                      ></OSearch>
                     </div>
-                    <ODropdownItem
-                      v-for="it in item?.filtersConfig?.select?.options"
-                      :key="it.value"
-                      :class="
-                        it.value === filterConfig[item.key].selectValue
-                          ? 'is-active'
-                          : ''
-                      "
-                      :command="it.value"
-                    >
-                      {{ it.label }}
-                    </ODropdownItem>
-                  </template>
-                </ODropdown>
-              </div>
-            </template>
-          </OTableColumn>
+                  </el-popover>
+                  <ODropdown
+                    v-if="item?.filtersConfig?.select"
+                    :max-height="250"
+                    trigger="click"
+                    @command="select($event, item.key)"
+                    @visible-change="(val:boolean) => filterConfig[item.key].visible = val"
+                  >
+                    <OIcon class="header-icon" :class="isActive(item.key)">
+                      <IconFilter></IconFilter>
+                    </OIcon>
+                    <template #dropdown>
+                      <div class="search-box">
+                        <ODropdownItem v-if="true" :command="''">
+                          取消选项
+                        </ODropdownItem>
+                      </div>
+                      <ODropdownItem
+                        v-for="it in item?.filtersConfig?.select?.options"
+                        :key="it.value"
+                        :class="
+                          it.value === filterConfig[item.key].selectValue
+                            ? 'is-active'
+                            : ''
+                        "
+                        :command="it.value"
+                      >
+                        {{ it.label }}
+                      </ODropdownItem>
+                    </template>
+                  </ODropdown>
+                </div>
+              </template>
+            </ElTableColumn>
+          </template>
+          <template
+            v-else-if="
+              item?.children?.length &&
+              item.children.some((it) => checkedColumnList.includes(it.key))
+            "
+          >
+            <ElTableColumn :label="item.label">
+              <template v-for="it in item.children" :key="it.key">
+                <ElTableColumn
+                  v-if="checkedColumnList.includes(it.key)"
+                  :prop="it.key"
+                  :label="it.label"
+                ></ElTableColumn>
+              </template>
+            </ElTableColumn>
+          </template>
         </template>
         <OTableColumn
           v-if="columnList.length > 1"
@@ -302,7 +328,7 @@ const sizeChange = () => {
           </template>
         </OTableColumn>
       </transition-group>
-    </OTable>
+    </ElTable>
     <OPagination
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"

@@ -3,7 +3,7 @@ import { queryMetricsData } from '@/api/api-sig';
 import { IObject } from '@/shared/interface';
 import { formatDate } from '@/shared/utils/helper';
 import { useCommonData } from '@/stores/common';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { throttle } from 'lodash-es';
 import { Observable, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -44,6 +44,9 @@ const init = throttle(
 );
 
 const initData = () => {
+  if (formRadioValue.value.metrics === 'D2') {
+    PRValue.value.items = 'pr';
+  }
   zip(queryDetail(), queryDevelop())
     .pipe(
       map((val) => {
@@ -53,8 +56,10 @@ const initData = () => {
         };
         return val.reduce((pre: any, next: any) => {
           const { xAxis, ...series } = next;
-          pre.xAxis = xAxis;
-          pre.series.push(series);
+          if (xAxis && series) {
+            pre.xAxis = xAxis;
+            pre.series.push(series);
+          }
           return pre;
         }, _echartData);
       })
@@ -107,29 +112,37 @@ const queryDetail = () => {
 };
 const queryDevelop = () => {
   return new Observable((observe) => {
+    if (formRadioValue.value.metrics === 'D0') {
+      observe.next({});
+      observe.complete();
+      return;
+    }
     const param = {
-      metrics: [formRadioValue.value.metrics],
+      metrics: [PRValue.value.items],
       community: community.value,
       variables: {
         org: props.commonParams.org,
-        internal: props.commonParams.internal,
         interval: formRadioValue.value.interval,
+        term: formRadioValue.value.metrics,
       },
       operation: formRadioValue.value.operation,
       start: props.commonParams.start,
       end: props.commonParams.end,
     };
-    const stat = {
-      name: 'PR',
-      xAxis: [] as string[],
-      data: [] as any[],
-      type: 'line',
-    };
     queryMetricsData(param)
       .then((res) => {
         const { data } = res;
-        const key = `${formRadioValue.value.metrics}_${formRadioValue.value.interval}`;
+        const key = `${formRadioValue.value.metrics}_${PRValue.value.items}`;
         if (data[key]) {
+          const stat = {
+            name:
+              PROption.value[0].options.find(
+                (item) => item.value === PRValue.value.items
+              )?.label || 'PR',
+            xAxis: [] as string[],
+            data: [] as any[],
+            type: 'line',
+          };
           data[key].forEach((item: any) => {
             stat.xAxis.push(formatDate(item.date));
             stat.data.push({
@@ -137,12 +150,14 @@ const queryDevelop = () => {
               date: item.date,
             });
           });
+          observe.next(stat);
+        } else {
+          observe.next({});
         }
-        observe.next(stat);
         observe.complete();
       })
       .catch(() => {
-        observe.next(stat);
+        observe.next({});
         observe.complete();
       });
   });
@@ -179,9 +194,35 @@ const formRadioOption: FormRadioConfig[] = [
 ];
 
 const formRadioValue = ref({
-  metrics: 'D0',
+  metrics: 'D1',
   operation: 'increase',
   interval: '1d',
+});
+
+const PROption = computed(() =>
+  formRadioValue.value.metrics === 'D2'
+    ? [
+        {
+          label: '度量指标',
+          id: 'items',
+          options: [{ label: 'PR', value: 'pr' }],
+        },
+      ]
+    : [
+        {
+          label: '度量指标',
+          id: 'items',
+          options: [
+            { label: 'PR', value: 'pr' },
+            { label: 'Issue', value: 'issue' },
+            { label: 'Comment', value: 'comment' },
+          ],
+        },
+      ]
+);
+
+const PRValue = ref({
+  items: 'pr',
 });
 
 const clickSeries = (res: any) => {
@@ -215,12 +256,22 @@ const clickSeries = (res: any) => {
 </script>
 <template>
   <div>
-    <OFormRadio
-      v-model="formRadioValue"
-      class="right-radio"
-      :option="formRadioOption"
-      @change="initData"
-    ></OFormRadio>
+    <div class="select">
+      <OFormRadio
+        v-model="formRadioValue"
+        class="right-radio"
+        :option="formRadioOption"
+        @change="initData"
+      ></OFormRadio>
+      <OFormRadio
+        v-show="formRadioValue.metrics !== 'D0'"
+        v-model="PRValue"
+        class="right-radio"
+        :option="PROption"
+        @change="initData"
+      ></OFormRadio>
+    </div>
+
     <OChartBar
       title="开发者"
       :data="echartData"
@@ -229,5 +280,8 @@ const clickSeries = (res: any) => {
   </div>
 </template>
 <style lang="scss" scoped>
-
+.select {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
 </style>

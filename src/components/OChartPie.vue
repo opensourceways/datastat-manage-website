@@ -18,6 +18,10 @@ const props = defineProps({
     type: Array<EChartsOption>,
     default: {},
   },
+  title: {
+    type: String,
+    default: '',
+  },
   width: {
     type: String,
     default: '500px',
@@ -39,7 +43,6 @@ onMounted(() => {
 const getOption = (): EChartsOption => {
   return {
     title: {
-      text: '合入PR个数',
       left: 'right',
     },
     tooltip: {
@@ -52,9 +55,9 @@ const getOption = (): EChartsOption => {
     },
     series: [
       {
-        name: '合入PR个数',
+        name: props.title,
         type: 'pie',
-        radius: ['0%', '70%'],
+        radius: ['0%', '90%'],
         data: props.data.map((item) => ({
           value: item.value,
           name: item.name,

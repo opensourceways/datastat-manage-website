@@ -13,11 +13,15 @@ const props = defineProps({
   },
   width: {
     type: String,
-    default: '500px',
+    default: '300px',
   },
   height: {
     type: String,
-    default: '580px',
+    default: '300px',
+  },
+  title: {
+    type: String,
+    default: '',
   },
   onlyValue: {
     type: Boolean,
@@ -36,6 +40,7 @@ const dispatchAction = (data: any) => {
       :id="id"
       ref="pieEchart"
       :data="data"
+      :title="title"
       :width="width"
       :height="height"
     ></OChartPie>
@@ -52,6 +57,6 @@ const dispatchAction = (data: any) => {
   display: flex;
 }
 .table {
-  margin-left: 100px;
+  margin-left: 16px;
 }
 </style>
