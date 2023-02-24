@@ -89,6 +89,17 @@ const columnList = computed(() => {
     })
     .flat();
 });
+const getColumnLabel = computed(() => {
+  return props.tableConfig.reduce((pre, next) => {
+    if (next.children) {
+      next.children.forEach((it) => (pre[it.key] = it.label));
+    } else {
+      pre[next.key] = next.label;
+    }
+    return pre;
+  }, {} as any);
+});
+
 const getCheckedColumnList = () => {
   const str = localStorage.getItem('tableCol') || '{}';
   try {
@@ -321,7 +332,7 @@ const sizeChange = () => {
                   :type="checkedColumnList.includes(item) ? 'primary' : 'text'"
                   @click="setCheckedColumnList(item)"
                 >
-                  {{ item }}
+                  {{ getColumnLabel[item] }}
                 </OTag>
               </div>
             </el-popover>

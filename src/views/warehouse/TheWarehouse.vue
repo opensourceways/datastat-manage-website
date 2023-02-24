@@ -37,11 +37,11 @@ const insiderOption: OptionItem[] = [
     label: 'All',
   },
   {
-    value: '0',
+    value: '1',
     label: '内部人员',
   },
   {
-    value: '1',
+    value: '0',
     label: '外部人员',
   },
 ];
