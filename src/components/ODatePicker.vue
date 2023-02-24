@@ -76,10 +76,10 @@ const shortcuts = [
     },
   },
   {
-    text: 'openEuler 20.03 LTS',
+    text: 'openEuler 22.09',
     value: () => {
-      const start = new Date('2019-01-01');
-      const end = new Date('2020-03-30');
+      const start = new Date('2022-04-15');
+      const end = new Date('2022-09-30');
       return [start, end];
     },
   },
@@ -92,18 +92,10 @@ const shortcuts = [
     },
   },
   {
-    text: 'openEuler 22.09',
+    text: 'openEuler 21.09',
     value: () => {
-      const start = new Date('2022-04-15');
-      const end = new Date('2022-09-30');
-      return [start, end];
-    },
-  },
-  {
-    text: 'openEuler 20.09',
-    value: () => {
-      const start = new Date('2020-05-31');
-      const end = new Date('2020-09-30');
+      const start = new Date('2021-05-18');
+      const end = new Date('2021-09-30');
       return [start, end];
     },
   },
@@ -116,10 +108,18 @@ const shortcuts = [
     },
   },
   {
-    text: 'openEuler 21.09',
+    text: 'openEuler 20.09',
     value: () => {
-      const start = new Date('2021-05-18');
-      const end = new Date('2021-09-30');
+      const start = new Date('2020-05-31');
+      const end = new Date('2020-09-30');
+      return [start, end];
+    },
+  },
+  {
+    text: 'openEuler 20.03 LTS',
+    value: () => {
+      const start = new Date('2019-01-01');
+      const end = new Date('2020-03-30');
       return [start, end];
     },
   },

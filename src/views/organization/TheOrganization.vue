@@ -37,11 +37,11 @@ const insiderOption: OptionItem[] = [
     label: 'All',
   },
   {
-    value: '0',
+    value: '1',
     label: '内部人员',
   },
   {
-    value: '1',
+    value: '0',
     label: '外部人员',
   },
 ];
@@ -79,16 +79,6 @@ const initSelect = () => {
       <OSelect v-model="selectValue" @change="initSelect">
         <OOption
           v-for="item in communityOption"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </OSelect>
-    </OLabel>
-    <OLabel name="内部外部人员">
-      <OSelect v-model="selectInsider" @change="initSelect">
-        <OOption
-          v-for="item in insiderOption"
           :key="item.value"
           :label="item.label"
           :value="item.value"
