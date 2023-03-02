@@ -84,8 +84,8 @@ const tableData: User[] = [
 
 <style>
 .el-table .warning-row {
-  --el-table-tr-bg-color: var(--el-color-primary);
-  --el-table-row-hover-bg-color: var(--el-color-primary);
+  --el-table-tr-bg-color: rgb(117, 181, 236);
+  --el-table-row-hover-bg-color: rgb(117, 181, 236);
   color: #fff;
 }
 .el-table .success-row {

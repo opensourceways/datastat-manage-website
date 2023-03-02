@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { queryMetricsData } from '@/api/api-sig';
 import { useCommonData } from '@/stores/common';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { throttle } from 'lodash-es';
 import { from, Observable, zip } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -36,47 +36,37 @@ const init = throttle(
 );
 
 const initData = () => {
-  // const arr = ['totalCount', 'wowratio', 'momratio'];
-  const arr = ['totalCount'];
-  const operations = from(arr);
-  operations.pipe(mergeMap((item) => queryTotal(item)));
+  queryTotalCount();
 };
-
-const queryTotal = (operation: string) => {
-  return new Observable((observe) => {
-    const param = {
-      metrics: ['download_count', 'download_ip'],
-      community: community.value,
-      variables: {
-        oversea: props.commonParams.oversea,
-      },
-      operation,
-      start: props.commonParams.start,
-      end: props.commonParams.end,
-    };
-    queryMetricsData(param)
-      .then((res) => {
-        const data = res?.data || {};
-        observe.next(data);
-        observe.complete();
-      })
-      .catch(() => {
-        observe.next({});
-        observe.complete();
-      });
+const total = ref(0);
+const increase = ref(0);
+const queryTotalCount = () => {
+  const param = {
+    metrics: ['download_count', 'download_ip'],
+    community: community.value,
+    variables: {
+      oversea: props.commonParams.oversea,
+    },
+    operation: 'totalCount',
+    start: props.commonParams.start,
+    end: props.commonParams.end,
+  };
+  queryMetricsData(param).then((res) => {
+    const { data } = res;
+    total.value = data.download_count;
+    increase.value = data.download_ip;
   });
 };
-
 const titalData = ref([
   {
     key: 'download_count',
     name: '用户量（下载量）',
-    value: 0,
+    value: computed(() => total.value),
   },
   {
     key: 'download_ip',
     name: '下载IP数',
-    value: 0,
+    value: computed(() => increase.value),
   },
 ]);
 </script>

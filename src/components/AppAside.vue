@@ -83,6 +83,14 @@ const clickCollapse = () => {
         </el-icon>
         <span>仓库分析</span>
       </el-menu-item>
+      <!-- <el-menu-item index="/detailuser">
+        <el-icon>
+          <OIcon>
+            <IconTime></IconTime>
+          </OIcon>
+        </el-icon>
+        <span>贡献者详情</span>
+      </el-menu-item> -->
       <!-- <el-menu-item index="/contribution">
         <el-icon>
           <OIcon>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { queryMetricsData } from '@/api/api-sig';
 import { useCommonData } from '@/stores/common';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { throttle } from 'lodash-es';
 import { from, Observable, zip } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -36,46 +36,38 @@ const init = throttle(
 );
 
 const initData = () => {
-  // const arr = ['totalCount', 'wowratio', 'momratio'];
-  const arr = ['totalCount'];
-  const operations = from(arr);
-  operations.pipe(mergeMap((item) => queryTotal(item)));
+  queryTotalCount();
 };
 
-const queryTotal = (operation: string) => {
-  return new Observable((observe) => {
-    const param = {
-      metrics: ['download_count', 'download_ip'],
-      community: community.value,
-      variables: {
-        oversea: props.commonParams.oversea,
-      },
-      operation,
-      start: props.commonParams.start,
-      end: props.commonParams.end,
-    };
-    queryMetricsData(param)
-      .then((res) => {
-        const data = res?.data || {};
-        observe.next(data);
-        observe.complete();
-      })
-      .catch(() => {
-        observe.next({});
-        observe.complete();
-      });
+const sig_total = ref(0);
+const queryTotalCount = () => {
+  const param = {
+    metrics: ['contributes'],
+    community: community.value,
+    variables: {
+      org: props.commonParams.org,
+      internal: props.commonParams.internal,
+      term: 'repo',
+    },
+    operation: 'totalCount',
+    start: props.commonParams.start,
+    end: props.commonParams.end,
+  };
+  queryMetricsData(param).then((res) => {
+    const { data } = res;
+    sig_total.value = data.contributes.length;
   });
 };
 
 const titalData = ref([
   {
     label: '仓库总数',
-    value: 0,
+    value: computed(() => sig_total.value),
   },
-  {
-    label: '访客数(UV)',
-    value: 0,
-  },
+  // {
+  //   label: '访客数(UV)',
+  //   value: 0,
+  // },
 ]);
 </script>
 <template>

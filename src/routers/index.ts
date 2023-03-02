@@ -6,6 +6,7 @@ import TheDeveloper from '@/views/developer/TheDeveloper.vue';
 import TheOrganization from '@/views/organization/TheOrganization.vue';
 import TheSigs from '@/views/sigs/TheSigs.vue';
 import TheWarehouse from '@/views/warehouse/TheWarehouse.vue';
+import DetailUser from '@/views/detail/user/DetailUser.vue'
 import { useCommonData } from '@/stores/common';
 
 export const routes: RouteRecordRaw[] = [
@@ -39,6 +40,11 @@ export const routes: RouteRecordRaw[] = [
     path: '/warehouse',
     name: 'warehouse',
     component: TheWarehouse,
+  },
+  {
+    path: '/detailuser',
+    name: 'detailuser',
+    component: DetailUser,
   },
 ];
 
