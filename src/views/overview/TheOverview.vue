@@ -171,6 +171,7 @@ onMounted(() => {
       line-height: 84px;
       font-weight: 400;
       cursor: pointer;
+
     }
     .community-info {
       text-align: left;
@@ -189,6 +190,7 @@ onMounted(() => {
       .num {
         font-size: 40px;
         line-height: 48px;
+
       }
     }
   }

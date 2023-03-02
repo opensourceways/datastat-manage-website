@@ -178,8 +178,10 @@ const queryTermsOfIncrease = () => {
         pre.series.push(series);
       }
       return pre;
-    }, _echartData)
+    }, _echartData),
   );
+
+
 };
 
 const queryIncrease = (term: string) => {

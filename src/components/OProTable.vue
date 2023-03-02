@@ -79,16 +79,21 @@ onMounted(() => {
 });
 
 // 列显示隐藏
-const columnList = computed(() => {
-  return props.tableConfig
-    .map((item) => {
-      if (item.children) {
-        return item.children.map((it) => it.key);
-      }
-      return item.key;
-    })
-    .flat();
-});
+const columnList = ref<any>([]);
+watch(
+  () => [props.tableConfig, props.id],
+  () => {
+    columnList.value = props.tableConfig
+      .map((item) => {
+        if (item.children) {
+          return item.children.map((it) => it.key);
+        }
+        return item.key;
+      })
+      .flat();
+    checkedColumnList.value = getCheckedColumnList() || columnList.value;
+  }
+);
 const getColumnLabel = computed(() => {
   return props.tableConfig.reduce((pre, next) => {
     if (next.children) {

@@ -75,3 +75,10 @@ export function calcRatio(
     '%'
   );
 }
+
+// 数字排序 arr.sort(sortExp('code', false))
+export function sortExp(key: string, isAsc: boolean) {
+  return function (x: any, y: any) {
+    return (x[key] - y[key]) * (isAsc ? 1 : -1);
+  };
+}

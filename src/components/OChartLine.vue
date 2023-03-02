@@ -20,7 +20,7 @@ const props = defineProps({
   },
   height: {
     type: String,
-    default: '300px',
+    default: '500px',
   },
   title: {
     type: String,
@@ -42,7 +42,7 @@ const getOption = (): EChartsOption => {
     },
     legend: {
       data: props.data.series.map((item: any) => item.name),
-      bottom: 10,
+      top: 20,
     },
     toolbox: {
       feature: {

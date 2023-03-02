@@ -117,6 +117,9 @@ const clickItem = (data: any) => {
 .table {
   font-size: var(--o-font-size-tip);
   color: #4e5865;
+  height: auto;
+  width: 300px;
+  overflow-y: auto;
   th {
     font-weight: 500;
   }

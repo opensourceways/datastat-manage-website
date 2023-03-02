@@ -7,8 +7,8 @@ import { useCommonData } from '@/stores/common';
 import { throttle } from 'lodash-es';
 import { from, Observable } from 'rxjs';
 import { concatMap, reduce } from 'rxjs/operators';
-import { onMounted, ref, watch } from 'vue';
-
+import { onMounted, ref, watch, computed } from 'vue';
+import { FormRadioConfig } from '@/shared/formRadio.interface';
 const props = defineProps({
   // 必传，用于记忆缓存列显示隐藏
   id: {
@@ -52,35 +52,15 @@ const init = throttle(
 );
 
 const initData = () => {
-  queryCompanyContribute();
+  if (formRadioValue.value.metrics === 'developer') {
+    queryCompanyContribute();
+  } else {
+    queryMenTotalCount();
+  }
 };
 
 // table
 const proTableData = ref<IObject[]>([]);
-const proTableConfig: ProTableColConfig[] = [
-  {
-    key: 'type',
-    label: '组织类型',
-  },
-  {
-    key: 'developer',
-    label: '开发者贡献',
-    children: [
-      {
-        key: 'pr_ratio',
-        label: 'PR',
-      },
-      {
-        key: 'issue_ratio',
-        label: 'Issue',
-      },
-      {
-        key: 'comment_ratio',
-        label: 'Comment',
-      },
-    ],
-  },
-];
 
 const queryCompanyContribute = () => {
   queryTermsOfTotalCount().subscribe((data) => {
@@ -104,7 +84,34 @@ const queryCompanyContribute = () => {
     }));
   });
 };
+const pieData = ref();
+const queryMenTotalCount = () => {
+  const param = {
+    metrics: ['users'],
+    community: community.value,
+    variables: {
+      org: props.commonParams.org,
+      internal: props.commonParams.internal,
+      term: 'enterprise',
+    },
+    operation: 'totalCount',
+    start: props.commonParams.start,
+    end: props.commonParams.end,
+  };
+  queryMetricsData(param).then((res) => {
+    const { data } = res;
 
+    pieData.value = data.users.map((item: any) => ({
+      type: item.filter,
+      D0: `${item.D0 ? item.D0 : '0'}`,
+      D1: `${item.D1 ? item.D1 : '0'}`,
+      D2: `${item.D2 ? item.D2 : '0'}`,
+      ...item,
+    }));
+
+    proTableData.value = pieData.value;
+  });
+};
 const queryTermsOfTotalCount = () => {
   const terms = from(Object.keys(termsObj));
   return terms.pipe(
@@ -154,13 +161,167 @@ const queryTotalCount = (term: string) => {
       });
   });
 };
+const formRadioValue = ref({
+  metrics: 'developer',
+  // interval: '1d',
+});
+const formRadioOption: FormRadioConfig[] = [
+  // {
+  //   label: '详情',
+  //   id: 'interval',
+  //   options: [
+  //     { label: '参与贡献组织', value: '1d' },
+  //     // { label: '签署CLA组织', value: '1w' },
+  //   ],
+  // },
+  {
+    label: '度量指标',
+    id: 'metrics',
+    options: [
+      { label: '开发者贡献', value: 'developer' },
+      { label: '开发者人数', value: 'developerMen' },
+      // { label: '其他指标', value: 'comment' },
+    ],
+  },
+];
+
+const proTableConfig: ProTableColConfig[] = [
+  {
+    key: 'type',
+    label: '组织类型',
+  },
+  {
+    key: 'developer',
+    label: '开发者贡献',
+    children: [
+      {
+        key: 'pr_ratio',
+        label: 'PR',
+      },
+      {
+        key: 'issue_ratio',
+        label: 'Issue',
+      },
+      {
+        key: 'comment_ratio',
+        label: 'Comment',
+      },
+    ],
+  },
+];
+const proTableMenConfig: ProTableColConfig[] = [
+  {
+    key: 'type',
+    label: '组织类型',
+  },
+  {
+    key: 'developerMen',
+    label: '开发者人数',
+    children: [
+      {
+        key: 'D0',
+        label: 'D0',
+      },
+      {
+        key: 'D1',
+        label: 'D1',
+      },
+      {
+        key: 'D2',
+        label: 'D2',
+      },
+    ],
+  },
+];
+//导出栏位头
+const tableColumns = ref<any>({
+  sig名称: 'type',
+  pr: 'pr_ratio',
+  Issue: 'issue_ratio',
+  comment: 'comment_ratio',
+});
+const columnsContributes = {
+  sig名称: 'type',
+  pr: 'pr_ratio',
+  Issue: 'issue_ratio',
+  comment: 'comment_ratio',
+};
+const columnsMen = {
+  sig名称: 'type',
+  D0: 'D0',
+  D1: 'D1',
+  D2: 'D2',
+};
+
+watch(
+  () => formRadioValue.value.metrics,
+  () => getConfig(),
+  { deep: true }
+);
+const tableConfig = ref([
+  {
+    key: 'type',
+    label: '组织类型',
+  },
+  {
+    key: 'developer',
+    label: '开发者贡献',
+    children: [
+      {
+        key: 'pr_ratio',
+        label: 'PR',
+      },
+      {
+        key: 'issue_ratio',
+        label: 'Issue',
+      },
+      {
+        key: 'comment_ratio',
+        label: 'Comment',
+      },
+    ],
+  },
+]);
+const getConfig = () => {
+  if (formRadioValue.value.metrics === 'developer') {
+    tableConfig.value = proTableConfig;
+    tableColumns.value = columnsContributes;
+  } else {
+    tableConfig.value = proTableMenConfig;
+    tableColumns.value = columnsMen;
+  }
+};
 </script>
 <template>
   <div>
+    <OFormRadio
+      v-model="formRadioValue"
+      class="right-radio"
+      :option="formRadioOption"
+      @change="initData"
+    ></OFormRadio>
+    <div class="button">
+      <vue3-json-excel
+        :json-data="proTableData"
+        :fields="tableColumns"
+        name="导出数据"
+      >
+        <el-button type="primary">导出</el-button>
+      </vue3-json-excel>
+    </div>
     <OProTable
-      :id="id"
+      :id="`${id}_${formRadioValue.metrics}`"
       :data="proTableData"
-      :table-config="proTableConfig"
+      :table-config="tableConfig"
+      :height="5000"
     ></OProTable>
   </div>
 </template>
+<style lang="scss" scoped>
+.right-radio {
+  margin: var(--o-spacing-h4) 0;
+}
+.button {
+  padding-bottom: 20px;
+}
+</style>
